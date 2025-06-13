@@ -6,8 +6,14 @@ import { useColorScheme as useRNColorScheme } from 'react-native';
  */
 export function useColorScheme() {
   const [hasHydrated, setHasHydrated] = useState(false);
+  const [initialColorScheme, setInitialColorScheme] = useState<'light' | 'dark'>('dark');
 
   useEffect(() => {
+    // Detecta a preferência do sistema antes da hidratação
+    if (typeof window !== 'undefined') {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      setInitialColorScheme(prefersDark ? 'dark' : 'light');
+    }
     setHasHydrated(true);
   }, []);
 
@@ -17,5 +23,5 @@ export function useColorScheme() {
     return colorScheme;
   }
 
-  return 'light';
+  return initialColorScheme;
 }
